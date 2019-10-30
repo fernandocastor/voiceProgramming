@@ -1,0 +1,11 @@
+# Language Analysis and Tools for AmbiguousInput Streams by Andrew Begel and Susan L. Graham
+
+Some languages, such as PL/I, have no keywords. Therefore, words such as ``IF`` and ``THEN`` can only be identified as part of an if-statement (instead as just identifiers) by a parser or the language's static semantics. Fortran has problems related to optional spaces between parts of a statement being optional. This means that the line between parser and lexer becomes blurred.
+
+The approach to parser and lexer generation this proposes paper tackles five kinds of input streams: (i) single spelling, single lexical type (non-ambiguous), (ii) multiple spellings, single lexical type, (iii) single spelling, multiple lexical types, (iv) multiple spellings and lexical types, (v) embedded language. The multiple spelling, single lexical type problem seems to be more practical to modern programming languages than the single spelling multiple lexical types. I have to investigate  whether the latter can be avoided. For embedded languages, the main challenge is to identify the boundaries between the languages. 
+
+The proposed approach relies on a generalized LR parser to handle ambiguity scenarios. In a GLR, multiple actions are possible for each configuration of state on the stack and input tokens to be processed, unlike a traditional LR parser where there's only one possible action for each such configuration. The paper presents an **incremental** algorithm for GLR parsing. Being incremental is important for a responsive system in this context. 
+
+The kind of ambiguity this approach deals with is limited in the sense that it assumes that at least one of the potential paths it creates for parsing is actually valid. The single spelling, multiple lexical types does not seem to apply to modern languages. The multiple spellings, one lexical type scenario is realistic. However, it assumes that speech recognition will not, for example, split a word into two or more words that together sound like a single one. Admittedly, this is a very hard problem to deal with. This is one of the places where a more powerful lexer would make a difference: the context could influence the parsing. Accounting for context is something that the paper mentions, but does not investigate.
+
+Lots of stuff about embedded languages. Not interesting.
