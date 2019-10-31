@@ -1,0 +1,24 @@
+Some potential evaluation approaches:
+
+- We build some non-trivial examples
+- Developer walking and not using keyboard
+- Comparison between developers using voice and using the keyboard, so as to have a baseline 
+- Developers using only our system and no keyboard nor screen, just to assess whether they manage to finish
+- Voice programming as an assist when someone is also typing. Maybe the person who uses voice programming is sitting  beside the one with the keyboard (how to manage keyboard focus in this scenario?)
+- Programming robots on the fly (how hard is it to express those typical constraints? Is the language compiled?)
+
+
+Why do we understand natural language that we listen to but have such a hard time listening to programming language? Natural language is more self-contained? Programming languages require more context because one must understand multiple sentences in order for them to make sense?
+
+What kind of utterances do developers make to referring to common coding idioms, for example, how do they refer to a method call? "m is called on o"? "send message m to o"? "invoke m on o"? There are many studies that use the think aloud protocol. Would they help us? Would Felienne Herman's work help us?
+
+Our brain has only 7 registers! (look for information on this)
+
+
+Writing an extended abstract that clearly explains the problems and the scope of the work.
+
+Java
+Kotlin
+JavaScript (TypeScript) <==
+Python <==
+
