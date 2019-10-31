@@ -8,6 +8,6 @@ The proposed approach relies on a generalized LR parser to handle ambiguity scen
 
 The kind of ambiguity this approach deals with is limited in the sense that it assumes that at least one of the potential paths it creates for parsing is actually valid. The single spelling, multiple lexical types does not seem to apply to modern languages. The multiple spellings, one lexical type scenario is realistic. However, it assumes that speech recognition will not, for example, split a word into two or more words that together sound like a single one. Admittedly, this is a very hard problem to deal with. This is one of the places where a more powerful lexer would make a difference: the context could influence the parsing. Accounting for context is something that the paper mentions, but does not investigate. It does mention however the idea of scannerless parsing adopted in previous work, particularly in the context of GLR parsing work by Visser. These parsers do not have a separate lexer stage. 
 
-One thing that appears again and again (in my mind): how important is error recovery in a scenario that is so prone to ambiguity? My intuition is that it is very important, but what can it really do if, for example, parsing fails?
+One thing that appears again and again (in my mind): how important is error recovery in a scenario that is so prone to ambiguity? My intuition is that it is very important, but what can it really do if, for example, parsing fails? 
 
 Lots of stuff about embedded languages. Not interesting.
