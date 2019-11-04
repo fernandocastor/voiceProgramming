@@ -14,10 +14,21 @@ In the first case, "they" refers to the thieves, in the second, to the painting,
 
 If these kinds of problems have been worked out, it is possible to **Generate Language Output**. Examples of the kinds of outputs that can be generated include answers to questions about the text or translations to other languages. Disambiguating the senses of words, resolving pronouns, and identifying subjects and objects of sentences are all steps in this direction.
 
-**Textual entailment**: finding evidence to support a hypothesis in a short piece of text or stating that such evidence is not available. 
+**Textual entailment**: finding evidence to support a hypothesis in a short piece of text or stating that such evidence is not available. Automated textual entailment is a simple but non-trivial NLP problem.
+
 
 
 ## 2. Accessing Text Corpora and Lexical Resources
+
+Nltk includes many utilities to help in understanding the basic features of the text. Of these  them is the ``nltk.FreqDist`` (or ``nltk.probability.FreqDist``) class. As the name implies, it is useful to analyze the frequency distribution of words in a list of tokens or the distribution of characters in raw text. A ``FreqDist`` object is a dictionary-like structure that associates strings to their frequency of occurrence in an input string or list of strings. For example, to get the 20 most frequently occurring words in a string store at variable ``raw``, we could do the following:
+
+```
+>>> fdist = nltk.FreqDist(nltk.word_tokenize(raw))
+>>> for w in sorted(fdist, key=fdist.get, reverse=True)[:20]:
+...   print(w, '->', fdist[w])
+```
+
+In the example above, the ``key`` is a function that is applied by ``sorted`` to every element of ``fdist`` prior to performing comparisons, i.e., the sorting is performed based on the value associated with each word ``w``, instead of using the word itself. 
 
 **Lexical resources** enrich lists of words or sentences with additional information. Examples of lexical resources include pronunciation dictionaries that can be used for voice synthesis, comparative word lists that include how the words in the list would be written in multiple languages, and lists of synonyms for words. The latter provides very interesting information for us. For example, there are multiple sets of synonyms associated with the word "function", two of them listed below (extracted from WordNet):
 
@@ -31,11 +42,15 @@ Unrelated: the **polysemy** of a word is the number of meanings it has.
 One of the many interesting lexical resources in NLTK is the CMU Dictionary, which provides pronunciations for thousands of words. Could not find out how to load it from nltk, but it is possible to install it using pip, with package ``cmudict``.
 
 
+
 ## 3. Processing Raw Text
 
 The ``word_tokenize`` function from ``nltk`` can perform tokenization. Lists of tokens can be used to create ``nltk.Text`` objects, which provides us with utilities to deal with text such as the ``concordance``function. 
 
 This is not related, but it is very cool that Python has built-in libraries for reading (``feedparser`` library) blog feeds and for downloading the contents from web pages (``urllib`` library) very straightforwardly. Although not ideal, it is possible to read the contents of a web page with a one-liner (``raw = request.urlopen("THE://URL").read.decode("utf8")``). Processing the HTML requires a pip-accessible library (``bs4``) and can be made in the same line as the reading of the web page (by creating a ``BeautifulSoup`` object and invoking the ``get_text()`` method).
+
+
+### Regular Expressions
 
 Another non-related topic that the text covers: regular expressions (module ``re``). For example, ``re.search("^..j..t..$", w)`` matches word ``w`` if it has exactly 8 characters that have 'j' as the third letter and 't' as the sixth one. On the other hand, ``re.search('^e-?mail$', w)`` matches both "email" and "e-mail", where character '-' is optional. It is possible to specify specific sets of characteres that will match. For example, the regular expression in ``[w for w in tokens if re.search('[xyz]..[abc]', w)]`` will match any word from ``tokens`` that has at least four characters where, in that four-character sequence, the first one is 'x', 'y', or 'z' and the last one is 'a', 'b', or 'c'. The ``-`` symbol denotes a range of characters, e.g., ``[w for w in tokens if re.search('[h-k][x-z]', w)]``  matches every word that includes a sequence of two adjacent characters, the first one in the range between 'h' and 'k' and the second in the range between 'x' and 'z'. The ``+`` symbol is, as expected, one of more, whereas ``*`` means zero or more. The character ``^``, when appearing within square brackets, acts as a negation, e.g., ``[^aeiou]`` matches anything except for lowercase vowels. About ``{}`` and ``|``, this example matches anything that has either at least two consecutive 'r' or two 'e': ``[w for w in tokens if re.search('(r{2,}|e{2,})', w)]``. The upper bound on the number of consecutive repetitions is left unspecified. 
 
@@ -62,6 +77,16 @@ From what I could grasp, it is possible to reduce its matching power so that it 
 [('proces', 'ses')]
 ```
 
+Function ``re.findall()`` also supports a number of regular expression symbols to help in tokenization. Examples include the following:
+
+- ``\w`` any alphanumeric character
+- ``\W`` any non-alphanumeric character
+- ``\s`` any whitespace character (and its complement ``\S``)
+- ``\d`` any decimal digit (and its complement ``\D``)
+
+
+### Normalization
+
 When processing natural language text, we usually want to normalize the text prior to processing. This normalization includes various activities such as making everything lower case and performing **stemming**. Stemming is the process of extraction the root part ("stem") of a word, that part which does not change depending on the word's context of use. The nltk includes multiple stemmers. Documentation recommends the use of the Porter stemmer, although it also mentions an alternative one named Lancaster. I've checked both and it is not obvious which one is the best. For Porter, "body" becomes "bodili", "wake" remains "wake" (what about "waking?"), and "come" remains "come" (what about "coming"?). Lancaster works more intuitively in these cases. However, besides failing with "lying", it sometimes seems to stem too much, e.g., "terror" becomes "ter", and "natural" becomes "nat", instead of "natur". There's a third option of stemmer, Snowball, which is a lot like Porter but is more intuitive to me. Whereas Porter turns "fairly" into "fairli", Snowball makes it into "fair". It is very easy to use nltk stemmers (assuming that raw stores a string): 
 
 ```
@@ -72,7 +97,7 @@ When processing natural language text, we usually want to normalize the text pri
 >>> alsoStemmed = [snow.stem(w) for w in word_tokenize(raw)]  
 ```
 
-Another form of normalization is **lemmatization**. Whereas stemming attempts to normalize words by removing suffixes that denote variant forms, usually based on simple patterns that are identified algorithmically, lemmatization typically uses a vocabulary and considers the context of use of the word (morphological analysis) in order to get its dictionary form. A better definition:
+Another form of normalization is **lemmatization**. Whereas stemming attempts to normalize words by removing suffixes that denote variant forms, usually based on simple patterns that are identified algorithmically, lemmatization typically uses a vocabulary and considers the context of use of the word (morphological analysis) in order to get its dictionary form, also called **lemma** or **lexeme**. A better definition:
 
 > **Stemming vs. Lemmatization**
 From: http://nlp.stanford.edu/IR-book/html/htmledition/stemming-and-lemmatization-1.html
@@ -99,3 +124,44 @@ If the steps above do not work, install GCC 6 (``brew install gcc@6``) prior to 
 >>> h.suggest("deaf")
 ('dead', 'def', 'decaf', 'dean', 'dear', 'deal', 'leaf')
 ```
+
+One a final note about normalization, non-standard words, which include numbers, symbols, abbreviations, and dates, can be mapped to special vocabulary to make language modeling easier by reducing the overall vocabulary of the text. For example, every decimal number can be mapped to token 0.
+
+
+### Segmentation
+
+Segmentation is the general problem of breaking text into smaller units that make sense. Tokenization is one example of segmentation. Text can also be broken, for example, into sentences. Nltk includes a ``sent_tokenize()`` function similar to ``word_tokenize()``, but working with sentences. All of this applies to English. Some languages, such as Japanese and Chinese, make segmentation considerably harder since there is no clear separation between words.
+
+
+### Formatting
+
+Python supports text formatting by combining strings with the ``{}`` placeholder with the function ``format()``. For example:
+
+```
+>>> "{} is a {}".format("Spock", "Vulcan")
+'Spock is a Vulcan'
+```
+
+This can be used, for example, to format floating point number to a certain number of decimal places. This is achieved by using ``"{:.Xf}"``, where ``X`` is the number of decimal places to be used:
+
+```
+>>> "{:.3f}".format(math.pi)
+'3.142'
+>>> math.pi
+3.141592653589793
+```
+
+This can also be used to tabulate data:
+
+```
+>>> fdist = nltk.FreqDist(nltk.word_tokenize(raw))
+>>> for w in sorted(fdist, key=fdist.get, reverse=True)[:4]:
+...   print("{:16}".format(w), "{:{width}}".format(fdist[w], width=5))
+... 
+the               1390
+,                 1142
+.                  782
+of                 723
+```
+
+Python also has a text wrapping module called ``textwrap``.
