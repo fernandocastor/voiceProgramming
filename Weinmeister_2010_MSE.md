@@ -6,7 +6,7 @@ The text of the patent provides a single example of input and the recognized pro
 
 > *"new static class factorial; main input limit; int fact; for i 1 limit; increment fact by limit; endparen; out(fact); endmain"*
 
-According to the authors, for this (correctly recognized) text, the recognized program would be:
+According to the authors, for this (if correctly recognized) text, the recognized program would be:
 
 ```
 public static class Factorial {
