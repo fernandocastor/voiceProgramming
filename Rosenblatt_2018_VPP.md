@@ -12,7 +12,7 @@ This paper seems to place a higher emphasis on navigation coma besides simply in
 
 Voice-based programming should support replace-and-find naturally. It is probably common for the user to state stuff such as "change [the name of] variable i to j". Integration with refactoring would be even better.
 
-The proposed ID E uses web based speech recognition, more specifically, it leverages something called WebKitSpeechRecognition, which is natively available in WebKit-based browsers such as Google Chrome. It also uses a rule-based send text parser. The system uses predefined commands and their respective parameters to control how the system processes input. One of these commands is for text selection. That's interesting because the way the user specifies what is the part of the code to be selected is probably different from the way the user provides code input. 
+The proposed IDE uses web based speech recognition, more specifically, it leverages something called WebKitSpeechRecognition, which is natively available in WebKit-based browsers such as Google Chrome. It also uses a rule-based send text parser. The system uses predefined commands and their respective parameters to control how the system processes input. One of these commands is for text selection. That's interesting because the way the user specifies what is the part of the code to be selected is probably different from the way the user provides code input. 
 
 *"What it does not do well is interpret commands such as 'make a new variable foo with value 3'".*
 

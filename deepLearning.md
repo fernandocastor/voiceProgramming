@@ -255,6 +255,15 @@ The steps:
 
 ## Chapter 5
 
+**Convolutional neural networks** in Keras: `Conv2D` and `MaxPooling2D`layers. 
+To view the overall structure of a neural network, including shape and number of parameters of each layer, one can use `model.summary()`. 
+
+Another useful type of layer (that takes outputs from the convolution base and passes that into `Dense` layers): `Flatten` layers. As the name implies, they flatten the input vectors. Some interesting examples are presented in pages 120-122. 
+
+
+
+
+
 About transfer learning and data augmentation and why reusing a model in a more direct, OTS way, without incorporating it into our own custom model, does not provide support for data augmentation approaches. 
 
 https://stats.stackexchange.com/questions/331162/feature-extraction-freezing-convolutional-base-vs-training-on-extracted-featur/366465?newreg=4f0695a759ea4446ad76161b0e495093

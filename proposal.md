@@ -27,8 +27,12 @@ With this in mind, we address the aforementioned problems by leveraging three ma
 
   + https://towardsdatascience.com/character-level-cnn-with-keras-50391c3adf33
 
+*Complication*: No dataset. Existing work on program synthesis and similar areas tries to generate code from high level descriptions. This is a harder problem, but it is made easier by the availability of datasets pairing method-level comments and the code itself. Even one-line functions suffer from that problem. Documentation is written at a high level of abstraction, in a way that accounts too much for the context where the function is used. This is probably very different from what a user would provide as input. 
+
+*Complication*: Is this flavor of voice-based programming just natural language programming? I think not because existing approaches to natural language programming and program synthesis place a strong emphasis on abstract descriptions. Programming by voice is the opposite: the programmer wants finer grained control over what is generated. In addition, the kinds of errors that stem from voice recognition do not exist in plain natural language programming. 
+
 - **Embrace English language speech recognizers** because they are trained much more intensively than a PL-based language model would ever be. This means that we should take (potentially incorrect) English text as a starting point. The downside to this is that our approach would need to be retailored for additional natural languages. 
-- **Tackle this as an NLP problem**. In other words, pre-process the text to perform stemming, lemmatization, stop word removal, and mostly ignore the order of the terms. Also, look for typical homophones (again, "def" comes to mind)  and, based on context, remove them. The remark about context is necessary because, sometimes, a developer may really want to call a function "death".
+- **Tackle this as an NLP problem**. In other words, pre-process the text to perform stemming, lemmatization, stop word removal. Also, look for typical homophones (again, "def" comes to mind)  and, based on context, remove them. The remark about context is necessary because, sometimes, a developer may really want to call a function "death".
 - **Synthesize training data**. Use existing functions to generate different ways of vocalizing function declarations, taking measures based on existing work on dataset diversification and synthesis to improve diversity. Examples of such measures include word removal, exchange by homophone, include spurious word, and exchange by spurious word. In the future (when we consider other options), we may also want to include actions related to words that are important for other syntactic constructs (e.g., variable) to simulate mixing in a more natural way. It is also possible to mix words on a character by character basis, but that only makes sense if we use characters as features, instead of words.
 
 Check these texts:
@@ -95,6 +99,10 @@ Additional rules (what kind of grammar is this? Context-dependent?):
 About stop word removal for English:
 https://www.geeksforgeeks.org/removing-stop-words-nltk-python/
 
+Interesting website about data sets for source code-related ML:
+
+https://github.com/src-d/awesome-machine-learning-on-source-code 
+
 ## Perturbations
 
 Initially, we will introduce just the following types of perturbations:
@@ -104,7 +112,49 @@ Initially, we will introduce just the following types of perturbations:
 - Changes in the order. Cannot mix parameters and the function name. 
 - Combinations of the above. 
   
+### The actual sequence:
 
+1. Collect a large number (100K+) method signatures. 
+Maybe the corpus from this paper can help:
+Antonio Valerio Miceli Barone, Rico Sennrich:
+A Parallel Corpus of Python Functions and Documentation Strings for Automated Code Documentation and Code Generation. IJCNLP(2) 2017: 314-319
+
+Complications: complex function names, complex parameter names, special parameters such as "*args" and "**kwargs", default parameter values, parameter and function names which as not comprised of actual words, e.g., `kwarg`. Most functions use "_" as the separator, but some of them also use camel case. Deal with camel case, we can probably use the Inflection library (https://pypi.org/project/inflection/), more specifically, the `underscore` function: https://inflection.readthedocs.io/en/latest/_modules/inflection.html#underscore.
+
+Remove lines that start with the "@" symbol. Remove leading and trailing underscores.
+
+Identifiers: 
+- English words or
+- Underscore-separated sequences of English words
+- If a parameter comprises multiple words, there must be commas between them
+
+1. Generate a bunch of method readings
+2. Train a standard NN architecture for language translation
+
+The labels do not use the actual function names. We removed the "_" characters because we are not doing character-based encoding. Since we're using word encoding, `a_function` would be interpreted as a new word, instead of a combination of `a` and `function`. For function declarations, it is easy to add 
+the underscores later. That's not the case for other constructs. 
+
+Forgot to remove parameter names including **. 
+
+"build a function"
+
+
+Natural language programming vs. Voice programming
+
+
+paraphrases in French (for the kind of sentence we are using): often nonsensical. On the other hand, voice recognition often also produces nonsensical text, specially for stuff that is not in the language model.
+
+Google imposes weird restrictions on the usage of its translation services. At the end: 6000+ translation requests for single sentences. For 0.5 per translation, that amounts to 50 minutes! Too long. Used a special sequence to break sentences so that I could translate larger character sequences. Using XXXXXXXXXXX does not work (becomes a weird word). Using %%%%%%%%%%%%%%%%%%% also does not work (gets changed in multiple ways). 
+
+Expressions remain elusive
+
+
+1. Evaluate the balance of the generated readings. Maybe rebalance based on that.
+2. Create paraphrased versions of the methods using Spanish or French. Perform sanity checks on the paraphrased methods (to identify method and parameter names).
+3. Augment the data with work omissions, comissions, and partial reorderings. 
+4. Look for common misunderstandings (*"death"* for *"def"*, *"calling"* or *"colon"* for *":"*, *"funk"* for *"func"*, etc.)
+5. Train a standard NN architecture for language translation
+6.  Evaluate 
 
 ## Unaddressed known limitations
 
